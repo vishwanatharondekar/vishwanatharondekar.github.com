@@ -61,6 +61,7 @@ $(function(){
 			this.gridViewCache = {};
 			this.imagesPerPage = 20;
 			this.showPage({pageIndex : 0, query : options.query});
+			this.show();
 		},
 		render : function(data) {
 		},
@@ -186,10 +187,16 @@ $(function(){
 		},
 		update : function(options){
 			this.query = options.query;
+			this.reset();
+			this.options.slideShowView.reset();
+			this.show({pageIndex : 0, query : options.query})
+		},
+		reset : function(){
 			this.currentPageIndex = 0;
 			this.$('.page').remove();
-			this.gridViewCache = [];
-			this.showPage({pageIndex : 0, query : options.query});
+			this.gridViewCache = {};
+			this.collection.reset();
+
 		}
 	});
 	
@@ -259,8 +266,7 @@ $(function(){
 	
 	var SlideView = Backbone.View.extend({
 		initialize : function(options) {
-			this.slideViewCache = {};
-			this.currentSlideIndex = 0;
+			this.reset();
 		},
 		render : function(data) {
 		},
@@ -338,6 +344,13 @@ $(function(){
 		hide : function(){
 			//$(this.el).hide();
 			$(this.el).fadeOut();
+		},
+		reset : function(){
+			this.hide();
+			this.slideViewCache = {};
+			this.$('.slidecontainer').remove();
+			this.currentSlideIndex = 0;
+			this.collection.reset();
 		}
 	});
 	
