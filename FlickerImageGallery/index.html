@@ -1,0 +1,87 @@
+<html>
+
+<head>
+		<link rel="stylesheet" type="text/css" href="css/flickergallery.css"/>
+</head>
+
+
+<body>
+
+		<script type="text/javascript" src="js/lib/jquery-1.8.2.min.js"></script>
+		<script type="text/javascript" src="js/lib/underscore-min.js"></script>
+		<script type="text/javascript" src="js/lib/backbone.js"></script>
+		
+		
+		<style>
+		
+		.searchbox-wrapper {
+	    	background: url("../images/searchbox2_03.png") no-repeat scroll 0 0 transparent;
+    		height: 72px;
+    		margin: auto;
+    		width: 565px;
+		}
+		.inputbox {
+		 	border-radius: 12px 12px 12px 12px;
+		 	   font-size: 25px;
+		    height: 1.5em;
+		    margin-left: 60px;
+		    margin-top: 8px;
+		    outline: medium none;
+		    padding-left: 9px;
+		    text-align: left;
+		    vertical-align: middle;
+		    width: 15em;
+		</style>
+		
+	<div class=searchbarcontainer>
+	
+			<div class="searchbox-wrapper">
+				<form onsubmit="return false;" id="searchform">
+					<input type="text" placeholder="Type your query" autocomplete="off" name="q" id="q" class="inputbox"> 
+					<input type='button' class="buttonposition" src="images/vediscoversearchbutton.png" alt="Submit"> 
+					<input type="hidden" value="search" id="type" name="type">
+				</form>
+			</div>
+	
+	</div>
+	<div class='flickergallery'>
+	
+	
+	
+		<div class='gridviewcontainer' >
+			<div class="showslidebutton button right" >View Slide show</div>
+			<div class='gridcontainer'>
+			</div>
+			<div class='paginator'>
+				<div style="float : left">
+					<div class='currentpagelabel'> Showing Page <span class='pageno'>1</span> of <span class='totalPages'>21323</span></div>
+					<div> <span>Go to Page : </span><input class='pageInput' type=text size=2><span class='pagebutton button' style="float: none;">Go</span></div>
+				</div>
+				<div style="float:right">
+					<div class='previousPageButton button' >Previous Page
+					</div>
+					<div class='nextPageButton button' >Next Page
+					</div>
+				</div>
+			
+			</div>
+		
+		</div>
+		<div class='slideviewcontainer' style="display: none">
+			<div class=gridbuttoncontainer>
+				<div class='showgridbutton button right' >View Grid</div>
+			</div>
+			<div style="clear:both">
+				<div class='prevbutton button' >Previous</div>
+				<div class='slidescontainer' style="float:left;"></div>
+				<div class='nextbutton button right' >Next</div>
+			</div>
+		</div>
+	
+	
+	
+	</div>
+	<!-- <script type="text/javascript" src="js/flickerapiimpl.js"></script> -->
+	<script type="text/javascript" src="js/main.js"></script>
+</body>
+</html>
