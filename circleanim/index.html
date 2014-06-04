@@ -1,98 +1,156 @@
-<html><head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>Circle Anim Demo</title>
-  
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>JSON XPath</title>
 
-  
-  
-  
-  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
-  
-  <style type="text/css">
-    .circular{
-    -webkit-animation: circleAnim 2s infinite linear;
-    -moz-animation: circleAnim 2s infinite linear;
-    -o-animation: circleAnim 2s infinite linear;
-    -ms-animation: circleAnim 2s infinite linear;
-    animation: circleAnim 2s infinite linear;  
-  }
+<script type="text/javascript"
+	src="http://code.jquery.com/jquery-1.8.3.js"></script>
 
-  img{
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-  }
+<link rel="stylesheet" type="text/css" href="/css/normalize.css">
 
 
-@-webkit-keyframes circleAnim {
-    from {
-        -webkit-transform: rotate(-360deg);
-    }
+<link rel="stylesheet" type="text/css" href="/css/result-light.css">
 
-    to {
-        -webkit-transform: rotate(0deg);
-    }
+<style type="text/css">
+ul {
+	margin-left: 1em;
 }
 
-@-moz-keyframes circleAnim {
-    from {
-        -moz-transform: rotate(-360deg);
-    }
-
-    to {
-        -moz-transform: rotate(0deg);
-    }
+ul {
+	display: none;
+	border: 1px solid black;
+	padding: 1px;
 }
 
-@-o-keyframes circleAnim {
-    from {
-        -o-transform: rotate(0deg);
-    }
-
-    to {
-        -o-transform: rotate(-360deg);
-    }
+li {
+	list-style: none;
+}
+.json-key {
+	font-weight: bold;
+	padding-left: 5px;
 }
 
-@-ms-keyframes circleAnim {
-    from {
-        -ms-transform: rotate(0deg);
-    }
-
-    to {
-        -ms-transform: rotate(-360deg);
-    }
+.json-key:hover {
+	color: red;
+	cursor: pointer;
 }
 
-@keyframes circleAnim {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(-360deg);
-    }
+.json-expand:hover {
+	cursor: pointer;
 }
-  </style>
-  
+
+.json-expand:hover::before {
+	content: ">";
+}
+
+.json-expand::before {
+	content: "+";
+}
+
+.xpath-container{
+	border : 1px solid black;
+}
+
+#xpath{
+	height : 32px;
+	font-size :24px;
+}
+
+#input-textarea{
+	height:400px;
+}
+
+</style>
+
 
 
 <script type="text/javascript">//<![CDATA[ 
-window.onload=function(){
+$(window).load(function(){
+    function visitObj($container, obj) {
+        var $ul = $('<ul>');
 
-}//]]>  
+        for (var prop in obj) {
+
+            var $li = $('<li>');
+            $li.append('<span class="json-key">' + prop + ' </span>');
+            if (typeof obj[prop] === "object") {
+                 $li.append('<span class="json-expand"></span>');
+                 visitObj($li, obj[prop]);
+            } else {
+                $li.append('<span class="json-value">:'+obj[prop]+'</span>');                   
+            }
+            $ul.append($li);
+        }
+        $container.append($ul);
+    }
+
+
+    var jsonData = {
+    	    "glossary": {
+    	        "title": "example glossary",
+    			"GlossDiv": {
+    	            "title": "S",
+    				"GlossList": {
+    	                "GlossEntry": {
+    	                    "ID": "SGML",
+    						"SortAs": "SGML",
+    						"GlossTerm": "Standard Generalized Markup Language",
+    						"Acronym": "SGML",
+    						"Abbrev": "ISO 8879:1986",
+    						"GlossDef": {
+    	                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
+    							"GlossSeeAlso": ["GML", "XML"]
+    	                    },
+    						"GlossSee": "markup"
+    	                }
+    	            }
+    	        }
+    	    }
+    	};
+    
+	$('#input-textarea').val(JSON.stringify(jsonData));
+    visitObj($('#json-viewer'), jsonData);
+
+	$('.json-key').click(function(){
+	    var allParents = $(this).parentsUntil($('#json-viewer')).filter('li');
+	    var xPathExpression = "";
+	    for(var i=allParents.size()-1;i>=0; i--){
+	        var element = allParents[i]
+	        var key = $(element).find(">span.json-key").text().trim();
+	        xPathExpression += key+"/";
+	    }
+    	xPathExpression = xPathExpression.substr(0, xPathExpression.length-1);
+    	$('#xpath').val(xPathExpression)
+	});
+
+	$(document).on('click', '.json-expand', function(){
+		
+    	$(this).siblings('ul').toggle();
+	})
+
+$('.generate-json').click(function(){
+	var jsonString = $('#input-textarea').val();
+	try{
+		var jsonObject = JSON.parse(jsonString);
+		$('#json-viewer').html('<span>JSON</span><span class="json-expand"></span>');
+		visitObj($('#json-viewer'), jsonObject);
+	} catch (e){
+		alert('Error occured ')
+	}
+});
+
+});//]]>  
 
 </script>
 
 
-<style type="text/css"></style></head>
+</head>
 <body>
-  <img class="circular" src="http://www.presentation-process.com/images/circular-arrows-powerpoint.jpg">
-
-  
-
-
-
-
-
-</body></html>
+	<div class="xpath-container"><span>JSON Input : </span><textarea style="width:100%" id="input-textarea"></textarea></div>
+	<div><input type="button" class="generate-json" value="Generate Tree"></div>
+	<div class="xpath-container"><span>Xpath : </span><input style="width:100%" id="xpath"></div>
+	<div id="json-viewer">
+		<span>JSON</span><span class="json-expand"></span>
+	</div>
+</body>
+</html>
