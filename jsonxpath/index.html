@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>- jsFiddle demo</title>
+<title>JSON XPath</title>
 
 <script type="text/javascript"
 	src="http://code.jquery.com/jquery-1.8.3.js"></script>
@@ -22,6 +22,9 @@ ul {
 	padding: 1px;
 }
 
+li {
+	list-style: none;
+}
 .json-key {
 	font-weight: bold;
 	padding-left: 5px;
@@ -37,12 +40,26 @@ ul {
 }
 
 .json-expand:hover::before {
-	content: "+";
+	content: ">";
 }
 
 .json-expand::before {
-	content: ">";
+	content: "+";
 }
+
+.xpath-container{
+	border : 1px solid black;
+}
+
+#xpath{
+	height : 32px;
+	font-size :24px;
+}
+
+#input-textarea{
+	height:400px;
+}
+
 </style>
 
 
@@ -69,53 +86,58 @@ $(window).load(function(){
 
 
     var jsonData = {
-       "Attempted":"EditUser",
-       "Exception":{
-          "Message":"Something",
-          "TargetSite":"somewhere",
-          "Inner Exception":{
-             "Message":"Something else",
-             "TargetSite":"somewhere.core",
-                 "Inner Exception":{
-                "Message":"Another message",
-                "TargetSite":"something.core.subr",
-                "Inner Exception":{
-                   "Message":"Object reference not set to an instance of an object.",
-                   "TargetSite":"System.Web.Mvc.ActionResult Update(Int32, System.String, System.String)",
-                   "StackTrace":[
-                      "cvbvcb"
-                   ],
-                   "Inner Exception":{
-
-                   }
-                }
-             }
-          }
-       },
-       "details":{
-          "userEmail":"test@email.com",
-          "userId":"25",
-          "userRole":"User"
-       }
-    };
-
+    	    "glossary": {
+    	        "title": "example glossary",
+    			"GlossDiv": {
+    	            "title": "S",
+    				"GlossList": {
+    	                "GlossEntry": {
+    	                    "ID": "SGML",
+    						"SortAs": "SGML",
+    						"GlossTerm": "Standard Generalized Markup Language",
+    						"Acronym": "SGML",
+    						"Abbrev": "ISO 8879:1986",
+    						"GlossDef": {
+    	                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
+    							"GlossSeeAlso": ["GML", "XML"]
+    	                    },
+    						"GlossSee": "markup"
+    	                }
+    	            }
+    	        }
+    	    }
+    	};
+    
+	$('#input-textarea').val(JSON.stringify(jsonData));
     visitObj($('#json-viewer'), jsonData);
 
-$('.json-key').click(function(){
-    var allParents = $(this).parentsUntil($('#json-viewer')).filter('li');
-    var xPathExpression = "";
-    for(var i=allParents.size()-1;i>=0; i--){
-        var element = allParents[i]
-        var key = $(element).find(">span.json-key").text().trim();
-        xPathExpression += key+"/";
-    }
-    xPathExpression = xPathExpression.substr(0, xPathExpression.length-1);
-    $('#xpath').html(xPathExpression)
-});
+	$('.json-key').click(function(){
+	    var allParents = $(this).parentsUntil($('#json-viewer')).filter('li');
+	    var xPathExpression = "";
+	    for(var i=allParents.size()-1;i>=0; i--){
+	        var element = allParents[i]
+	        var key = $(element).find(">span.json-key").text().trim();
+	        xPathExpression += key+"/";
+	    }
+    	xPathExpression = xPathExpression.substr(0, xPathExpression.length-1);
+    	$('#xpath').val(xPathExpression)
+	});
 
-$('.json-expand').click(function(){
-    $(this).siblings('ul').toggle();
-})
+	$(document).on('click', '.json-expand', function(){
+		
+    	$(this).siblings('ul').toggle();
+	})
+
+$('.generate-json').click(function(){
+	var jsonString = $('#input-textarea').val();
+	try{
+		var jsonObject = JSON.parse(jsonString);
+		$('#json-viewer').html('<span>JSON</span><span class="json-expand"></span>');
+		visitObj($('#json-viewer'), jsonObject);
+	} catch (e){
+		alert('Error occured ')
+	}
+});
 
 });//]]>  
 
@@ -124,16 +146,11 @@ $('.json-expand').click(function(){
 
 </head>
 <body>
-	<div id="xpath"></div>
+	<div class="xpath-container"><span>JSON Input : </span><textarea style="width:100%" id="input-textarea"></textarea></div>
+	<div><input type="button" class="generate-json" value="Generate Tree"></div>
+	<div class="xpath-container"><span>Xpath : </span><input style="width:100%" id="xpath"></div>
 	<div id="json-viewer">
 		<span>JSON</span><span class="json-expand"></span>
 	</div>
-	
-
-
-
-
-
-
 </body>
 </html>
