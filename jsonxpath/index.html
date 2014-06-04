@@ -49,6 +49,10 @@ li {
 
 .xpath-container{
 	border : 1px solid black;
+	/* position:fixed;  */
+	top : 0;
+	width:100%;
+	background: white;
 }
 
 #xpath{
@@ -60,12 +64,19 @@ li {
 	height:400px;
 }
 
+.json-input{
+	/* margin-top:60px;	 */
+}
+
 </style>
 
 
 
 <script type="text/javascript">//<![CDATA[ 
 $(window).load(function(){
+	
+	var xpathElementInitialTop = $('.xpath-container').offset().top;
+	
     function visitObj($container, obj) {
         var $ul = $('<ul>');
 
@@ -127,7 +138,18 @@ $(window).load(function(){
 		
     	$(this).siblings('ul').toggle();
 	})
-
+$(document).on('scroll', function(){
+    if($('.xpath-container').offset().top-$(document).scrollTop()<=0){
+       $('.xpath-container').css('position', 'fixed'); 
+    }
+    
+    if($(document).scrollTop()<xpathElementInitialTop){
+       $('.xpath-container').css('position', 'static'); 
+    }
+    
+})
+	
+	
 $('.generate-json').click(function(){
 	var jsonString = $('#input-textarea').val();
 	try{
@@ -137,6 +159,7 @@ $('.generate-json').click(function(){
 	} catch (e){
 		alert('Error occured ')
 	}
+	$('#json-viewer').fadeIn();
 });
 
 });//]]>  
@@ -146,7 +169,7 @@ $('.generate-json').click(function(){
 
 </head>
 <body>
-	<div class="xpath-container"><span>JSON Input : </span><textarea style="width:100%" id="input-textarea"></textarea></div>
+	<div class="json-input"><span>JSON Input : </span><textarea style="width:100%" id="input-textarea"></textarea></div>
 	<div><input type="button" class="generate-json" value="Generate Tree"></div>
 	<div class="xpath-container"><span>Xpath : </span><input style="width:100%" id="xpath"></div>
 	<div id="json-viewer">
