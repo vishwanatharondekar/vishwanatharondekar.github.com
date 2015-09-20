@@ -153,16 +153,12 @@ $(function(){
 			}
 			
 			
-			var url = 'http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=47adbb50cbdd79b35a80868356361172&tags=' + (data.query?data.query:this.query) + '&per_page=20&page=' + (pageIndex + 1) +'&format=json&extras=owner_name,original_format&jsoncallback=?';
+			var url = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=47adbb50cbdd79b35a80868356361172&tags=' + (data.query?data.query:this.query) + '&per_page=20&page=' + (pageIndex + 1) +'&format=json&extras=owner_name,original_format&jsoncallback=?';
 			console.log(url);
 			$.getJSON({
 			    url : url,
-			    jsonpCallback : jsonFlickrApi,
-			    //dataType: "jsonp",
-			    success : function (response){
-			        jsonFlickrApi(response);
-			    }
-
+			    jsonp : jsonFlickrApi,
+			    dataType: "jsonp"
 			});
 			this.$('.pageno').html(pageIndex+1);
 		},
