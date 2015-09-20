@@ -20,7 +20,7 @@
 	}
 
 	$.ajax({
-	    url : 'http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=47adbb50cbdd79b35a80868356361172&tags=flower&per_page=20&page=3&format=json',
+	    url : 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=47adbb50cbdd79b35a80868356361172&tags=flower&per_page=20&page=3&format=json',
 	    jsonpCallback : jsonFlickrApi,
 	    //dataType: "jsonp",
 	    success : function (response){
